@@ -1,0 +1,12 @@
+schema: spec-driven
+  context: |
+    Tech stack: Laravel, Vue.js
+    We use conventional commits
+    Domain: TODO App
+
+rules:
+  proposal:
+    - Always include a "Non-goals" section
+  tasks:
+    - Break tasks into chunks of max 1 hour
+
