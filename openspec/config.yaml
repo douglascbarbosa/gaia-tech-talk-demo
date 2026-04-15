@@ -1,8 +1,9 @@
 schema: spec-driven
-  context: |
-    Tech stack: Laravel, Vue.js
-    We use conventional commits
-    Domain: TODO App
+
+context: |
+  Tech stack: Laravel, Vue.js
+  We use conventional commits
+  Domain: Developer Portfolio Portal
 
 rules:
   proposal:
