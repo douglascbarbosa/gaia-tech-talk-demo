@@ -2,17 +2,23 @@
 
 namespace Tests\Feature\Settings;
 
-use App\Models\User;
+use App\Models\Developer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Testing\AssertableInertia as Assert;
 use Laravel\Fortify\Features;
 use Tests\TestCase;
 
+/**
+ * Feature tests for the security settings page and password updates.
+ */
 class SecurityTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * Security settings render with two-factor props when the feature is on.
+     */
     public function test_security_page_is_displayed()
     {
         $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
@@ -22,7 +28,7 @@ class SecurityTest extends TestCase
             'confirmPassword' => true,
         ]);
 
-        $user = User::factory()->create();
+        $user = Developer::factory()->create();
 
         $this->actingAs($user)
             ->withSession(['auth.password_confirmed_at' => time()])
@@ -34,11 +40,14 @@ class SecurityTest extends TestCase
             );
     }
 
+    /**
+     * When Fortify requires password confirmation, unconfirmed sessions redirect to confirm password.
+     */
     public function test_security_page_requires_password_confirmation_when_enabled()
     {
         $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
 
-        $user = User::factory()->create();
+        $user = Developer::factory()->create();
 
         Features::twoFactorAuthentication([
             'confirm' => true,
@@ -51,11 +60,14 @@ class SecurityTest extends TestCase
         $response->assertRedirect(route('password.confirm'));
     }
 
+    /**
+     * When confirmation is disabled, the security page loads without a redirect.
+     */
     public function test_security_page_does_not_require_password_confirmation_when_disabled()
     {
         $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
 
-        $user = User::factory()->create();
+        $user = Developer::factory()->create();
 
         Features::twoFactorAuthentication([
             'confirm' => true,
@@ -70,13 +82,16 @@ class SecurityTest extends TestCase
             );
     }
 
+    /**
+     * With two-factor disabled in config, the page still renders with management flags off.
+     */
     public function test_security_page_renders_without_two_factor_when_feature_is_disabled()
     {
         $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
 
         config(['fortify.features' => []]);
 
-        $user = User::factory()->create();
+        $user = Developer::factory()->create();
 
         $this->actingAs($user)
             ->get(route('security.edit'))
@@ -89,9 +104,12 @@ class SecurityTest extends TestCase
             );
     }
 
+    /**
+     * The authenticated developer can change password with a valid current password.
+     */
     public function test_password_can_be_updated()
     {
-        $user = User::factory()->create();
+        $user = Developer::factory()->create();
 
         $response = $this
             ->actingAs($user)
@@ -109,9 +127,12 @@ class SecurityTest extends TestCase
         $this->assertTrue(Hash::check('new-password', $user->refresh()->password));
     }
 
+    /**
+     * Password update fails when the current password is incorrect.
+     */
     public function test_correct_password_must_be_provided_to_update_password()
     {
-        $user = User::factory()->create();
+        $user = Developer::factory()->create();
 
         $response = $this
             ->actingAs($user)

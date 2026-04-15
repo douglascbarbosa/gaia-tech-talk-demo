@@ -10,4 +10,6 @@ rules:
     - Always include a "Non-goals" section
   tasks:
     - Break tasks into chunks of max 1 hour
+  implementation:
+    - All PHP classes and named functions/methods must include PHPDoc (summary; @param, @return, and @throws where applicable). Follow .cursor/rules/php-phpdoc.mdc.
 

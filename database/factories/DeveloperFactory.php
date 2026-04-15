@@ -2,18 +2,20 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
+use App\Models\Developer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * @extends Factory<User>
+ * Generates {@see Developer} models for tests and database seeding.
+ *
+ * @extends Factory<Developer>
  */
-class UserFactory extends Factory
+class DeveloperFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
+     * The current password being used by the factory (lazy-initialized).
      */
     protected static ?string $password;
 
@@ -30,6 +32,12 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'github_profile' => null,
+            'status' => 'working',
+            'address_street' => null,
+            'address_city' => null,
+            'address_postal_code' => null,
+            'address_country' => null,
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,

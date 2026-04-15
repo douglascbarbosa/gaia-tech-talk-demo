@@ -2,10 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Developer;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+/**
+ * Default database seeds for local and demo environments.
+ */
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -13,9 +16,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Developer::factory(10)->create();
 
-        User::factory()->create([
+        Developer::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);

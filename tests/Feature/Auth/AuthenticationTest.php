@@ -2,16 +2,22 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\User;
+use App\Models\Developer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Fortify\Features;
 use Tests\TestCase;
 
+/**
+ * Feature tests for login, logout, two-factor redirect, and login rate limiting.
+ */
 class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
+    /**
+     * The login page renders successfully for guests.
+     */
     public function test_login_screen_can_be_rendered()
     {
         $response = $this->get(route('login'));
@@ -19,9 +25,12 @@ class AuthenticationTest extends TestCase
         $response->assertOk();
     }
 
+    /**
+     * Valid credentials authenticate and redirect to the dashboard.
+     */
     public function test_users_can_authenticate_using_the_login_screen()
     {
-        $user = User::factory()->create();
+        $user = Developer::factory()->create();
 
         $response = $this->post(route('login.store'), [
             'email' => $user->email,
@@ -32,6 +41,9 @@ class AuthenticationTest extends TestCase
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 
+    /**
+     * Developers with 2FA enabled are redirected to the two-factor challenge after password check.
+     */
     public function test_users_with_two_factor_enabled_are_redirected_to_two_factor_challenge()
     {
         $this->skipUnlessFortifyHas(Features::twoFactorAuthentication());
@@ -41,7 +53,7 @@ class AuthenticationTest extends TestCase
             'confirmPassword' => true,
         ]);
 
-        $user = User::factory()->create();
+        $user = Developer::factory()->create();
 
         $user->forceFill([
             'two_factor_secret' => encrypt('test-secret'),
@@ -59,9 +71,12 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    /**
+     * Wrong password keeps the session unauthenticated.
+     */
     public function test_users_can_not_authenticate_with_invalid_password()
     {
-        $user = User::factory()->create();
+        $user = Developer::factory()->create();
 
         $this->post(route('login.store'), [
             'email' => $user->email,
@@ -71,9 +86,12 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    /**
+     * POST logout clears authentication and redirects home.
+     */
     public function test_users_can_logout()
     {
-        $user = User::factory()->create();
+        $user = Developer::factory()->create();
 
         $response = $this->actingAs($user)->post(route('logout'));
 
@@ -81,9 +99,12 @@ class AuthenticationTest extends TestCase
         $response->assertRedirect(route('home'));
     }
 
+    /**
+     * Too many failed attempts trigger the rate limiter response.
+     */
     public function test_users_are_rate_limited()
     {
-        $user = User::factory()->create();
+        $user = Developer::factory()->create();
 
         RateLimiter::increment(md5('login'.implode('|', [$user->email, '127.0.0.1'])), amount: 5);
 

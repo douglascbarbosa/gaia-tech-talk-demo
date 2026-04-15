@@ -10,10 +10,10 @@ import {
 import UserInfo from '@/components/UserInfo.vue';
 import { logout } from '@/routes';
 import { edit } from '@/routes/profile';
-import type { User } from '@/types';
+import type { Developer } from '@/types';
 
 type Props = {
-    user: User;
+    developer: Developer;
 };
 
 const handleLogout = () => {
@@ -26,7 +26,7 @@ defineProps<Props>();
 <template>
     <DropdownMenuLabel class="p-0 font-normal">
         <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <UserInfo :user="user" :show-email="true" />
+            <UserInfo :developer="developer" :show-email="true" />
         </div>
     </DropdownMenuLabel>
     <DropdownMenuSeparator />

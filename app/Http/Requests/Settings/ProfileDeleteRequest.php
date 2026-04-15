@@ -6,6 +6,9 @@ use App\Concerns\PasswordValidationRules;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Validates password confirmation before deleting the authenticated developer account.
+ */
 class ProfileDeleteRequest extends FormRequest
 {
     use PasswordValidationRules;

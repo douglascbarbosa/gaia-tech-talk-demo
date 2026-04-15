@@ -1,0 +1,24 @@
+---
+description: PHPDoc required on all PHP classes and named functions/methods
+globs: "**/*.php"
+alwaysApply: false
+---
+
+# PHP documentation (PHPDoc)
+
+All PHP **classes**, **interfaces**, **traits**, and **backed/unbacked enums** MUST have a **class-level** PHPDoc block that states what the type is for (one or more complete sentences, or a clear summary line plus optional detail).
+
+All **named functions and methods** (global functions, public, protected, and private class methods) MUST have a PHPDoc block immediately above the declaration that includes:
+
+- A **summary line** (what it does).
+- **`@param`** for every parameter (use `@param` with a type and name; use `mixed` only when unavoidable).
+- **`@return`** when the function returns a value (omit only for constructors and void methods where you document `@return void` if your style guide prefers explicit void).
+- **`@throws`** when the body can throw a documented exception type relevant to callers.
+
+**Additional expectations**
+
+- **Properties** (class constants included when they encode business meaning): document non-trivial ones with a short comment or `@var` where it aids readers.
+- Prefer **concise** sentences; avoid repeating the method name verbatim without adding meaning.
+- When overriding or implementing an interface method, ensure the docblock remains accurate (inheritDoc is acceptable only when the parent contract is unchanged and you add nothing new—prefer a short summary when behavior differs).
+
+When adding or editing PHP in this repository, satisfy this rule before finishing the change.

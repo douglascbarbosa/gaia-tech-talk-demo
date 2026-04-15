@@ -1,6 +1,12 @@
 <?php
 
-use App\Models\User;
+/**
+ * Authentication guards, providers, and password reset configuration.
+ *
+ * The default Eloquent model is {@see \App\Models\Developer} (`AUTH_MODEL`); the provider key remains `users` for Laravel compatibility.
+ */
+
+use App\Models\Developer;
 
 return [
 
@@ -64,7 +70,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', User::class),
+            'model' => env('AUTH_MODEL', Developer::class),
         ],
 
         // 'users' => [

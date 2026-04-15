@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
+/**
+ * Shares global Inertia props (app name, auth, UI state) on every response.
+ */
 class HandleInertiaRequests extends Middleware
 {
     /**
@@ -17,9 +20,10 @@ class HandleInertiaRequests extends Middleware
     protected $rootView = 'app';
 
     /**
-     * Determines the current asset version.
+     * Determines the current asset version for cache busting.
      *
-     * @see https://inertiajs.com/asset-versioning
+     * @param  Request  $request  Current HTTP request
+     * @return string|null Version token or null
      */
     public function version(Request $request): ?string
     {
@@ -27,19 +31,22 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * Define the props that are shared by default.
+     * Define the props that are shared by default with the Inertia root.
      *
-     * @see https://inertiajs.com/shared-data
-     *
+     * @param  Request  $request  Current HTTP request
      * @return array<string, mixed>
      */
     public function share(Request $request): array
     {
+        $authenticated = $request->user();
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $request->user(),
+                'developer' => $authenticated,
+                // Wayfinder / Inertia defaults expect `auth.user`; same model instance as `developer`.
+                'user' => $authenticated,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
